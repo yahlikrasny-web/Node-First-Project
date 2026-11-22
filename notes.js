@@ -1,36 +1,45 @@
  
  const Chance= require('chance')
+ const {Joke} = require('bee-jokes');
  const chance = new Chance();  
  const chalk= require('chalk')
  const fs=require('fs')
- const addNote=(Name,Age,Joke)=>
+ const beeJokes = new Joke();
+  const NOTES_FILE = 'notes.json';
+ const addNote=()=>
   {
+  
     const notes=loadNotes();
-    const duplicateNote=notes.find((note)=> note.Name=== Name)
-    if(!duplicateNote)
+      let Joke, Name, Age, duplicateNote;
+      do
       {
-      notes.push({
-       Name:Name,
-       Age:Age,
-       Joke:Joke
-     })
-     
-      savenotes(notes)
+       Joke =beeJokes.getJoke({}).joke;
+       Name= chance.name();
+       Age =chance.age();
+      duplicateNote=notes.find((note)=> note.Name.toLowerCase()=== Name.toLowerCase())
+      } while(duplicateNote)
+    
+notes.push({
+   Name,
+   Age,
+   Joke
+});
+
+      saveNotes(notes)
       console.log("new note added")
       }
-     else{
-      console.log("note title taken")
-      }
-    }
-    const savenotes=(notes)=>
+     
+    
+    const saveNotes=(notes)=>
     {
+      
       const dataJSON= JSON.stringify(notes)
-      fs.writeFileSync('notes.json',dataJSON)
+      fs.writeFileSync(NOTES_FILE, dataJSON)
     }
       const loadNotes=()=>
     {
      try{
-        const dataBuffer= fs.readFileSync('notes.json')
+        const dataBuffer= fs.readFileSync(NOTES_FILE)
         const dataJSON= dataBuffer.toString()
         return JSON.parse(dataJSON)
      }
@@ -42,9 +51,9 @@
   const removeNote=(Name)=>
    {
       const notes=loadNotes();
-      const duplicateNotes= notes.filter((note)=>note.Name!== Name)
-      savenotes( duplicateNotes)
-      if( notes.length>duplicateNotes.length)
+      const keepNotes= notes.filter((note)=>note.Name.toLowerCase()!== Name.toLowerCase())
+      saveNotes( keepNotes)
+      if( notes.length>keepNotes.length)
        {
        console.log(chalk.green('Note removed!'))
        }
@@ -57,32 +66,44 @@
    const listNotes=()=>
    {
      const notes=loadNotes();
-     console.log(chalk.green(' your notes!'))
-     for(let i=0;i<notes.length;i++)
+     if(notes.length===0)
      {
-      console.log(notes[i]);
+      console.log(chalk.red(' No notes found!'))
      }
-      
+     else
+     {
+      console.log(chalk.green(' Your notes!'))
+      for(let i=0;i<notes.length;i++)
+      {
+       console.log(notes[i]);
+      }
+    }
      
-
+      
+    
    }
    const readNote=(Name)=>
    {
-    notes=loadNotes();
-    const duplicateNote=notes.find((note)=> note.Name=== Name)
-     if(duplicateNote)
+     const notes=loadNotes();
+    const matchingNote=notes.find((note)=> note.Name.toLowerCase()=== Name.toLowerCase())
+     if(matchingNote)
      {
-      console.log("Name:"+duplicateNote.Name+" Age:"+duplicateNote.Age+" Joke:"+duplicateNote.Joke)
+      console.log(`Name: ${chance.name()}, Age: ${chance.age()}, Joke: ${beeJokes.getJoke().joke}`)
      }
    
     else
     {
-      console.log(chalk.red(' Error'))
+      console.log(chalk.red(' No Joke Found'))
     }
   }
   const pickOne=()=>
   {
-    notes=loadNotes();
+      const notes=loadNotes();
+    if(notes.length===0)
+    {
+      console.log(chalk.red(' No notes found!'))
+    }
+     
     console.log(chance.pickone(notes))
 
   }

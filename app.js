@@ -2,7 +2,7 @@
 
 const {Joke} = require('bee-jokes');
 const Chance= require('chance')
-const notes=require('./notes')
+const jokes=require('./notes')
 const yargs =require('yargs')
 const beeJokes = new Joke();
 const chance = new Chance();   
@@ -14,30 +14,26 @@ const chance = new Chance();
      
   handler()
     {
-      const joke =beeJokes.getJoke({});
-      const chanceName= chance.name();
-      const chanceAge =chance.age();
-      notes.addNote(chanceName,chanceAge,joke);
-     
+      jokes.addNote(); 
     }
    }),
 
   yargs.command(
  {
     command :'remove',
-    describe:'remove a new note',
+    describe:'remove a note',
      builder:
     {
       Name:
       {
-         describe: 'not Name',
+         describe: ' Name of note',
          demandOption:true,
          type: 'string'
       },
    },
      handler(argv)
     {
-      notes.removeNote(argv.Name);
+      jokes.removeNote(argv.Name);
     },
  })
 
@@ -48,7 +44,7 @@ const chance = new Chance();
     describe:'list a note',
       handler()
      {
-       notes.listNotes();
+       jokes.listNotes();
      },
  })
    yargs.command(
@@ -59,14 +55,14 @@ const chance = new Chance();
     {
       Name :
       {
-         describe: 'not Name',
+         describe: 'Name of note',
          demandOption:true,
          type: 'string'
       },
    },
     handler(argv)
     {
-      notes.readNote(argv.Name); 
+      jokes.readNote(argv.Name); 
     },
    })
      yargs.command(
@@ -75,7 +71,7 @@ const chance = new Chance();
     describe:'pick a note',
     handler()
     {
-     notes.pickOne();
+     jokes.pickOne();
     }
  })
 yargs.parse();
