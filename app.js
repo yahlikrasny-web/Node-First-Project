@@ -1,78 +1,56 @@
 
+const jokes = require("./jokes");
+const yargs = require("yargs");
 
-const {Joke} = require('bee-jokes');
-const Chance= require('chance')
-const jokes=require('./notes')
-const yargs =require('yargs')
-const beeJokes = new Joke();
-const chance = new Chance();   
+(yargs.command({
+  command: "add",
+  describe: "add a new joke",
 
- yargs.command(
- {
-    command :'add',
-    describe:'add a new note',
-     
-  handler()
-    {
-      jokes.addNote(); 
-    }
-   }),
-
-  yargs.command(
- {
-    command :'remove',
-    describe:'remove a note',
-     builder:
-    {
-      Name:
-      {
-         describe: ' Name of note',
-         demandOption:true,
-         type: 'string'
+  handler() {
+    jokes.addJoke();
+  },
+}),
+  yargs.command({
+    command: "remove",
+    describe: "remove a joke",
+    builder: {
+      name: {
+        describe: " Name of joke",
+        demandOption: true,
+        type: "string",
       },
-   },
-     handler(argv)
-    {
-      jokes.removeNote(argv.Name);
     },
- })
-
-
-   yargs.command(
- {
-    command :'list',
-    describe:'list a note',
-      handler()
-     {
-       jokes.listNotes();
-     },
- })
-   yargs.command(
- {
-    command :'read',
-    describe:'read a new note',
-    builder:
-    {
-      Name :
-      {
-         describe: 'Name of note',
-         demandOption:true,
-         type: 'string'
-      },
-   },
-    handler(argv)
-    {
-      jokes.readNote(argv.Name); 
+    handler(argv) {
+      jokes.removeJoke(argv.name);
     },
-   })
-     yargs.command(
- {
-    command :'pick',
-    describe:'pick a note',
-    handler()
-    {
-     jokes.pickOne();
-    }
- })
+  }));
+
+yargs.command({
+  command: "list",
+  describe: "list a joke",
+  handler() {
+    jokes.listJokes();
+  },
+});
+yargs.command({
+  command: "read",
+  describe: "read a new joke",
+  builder: {
+    name: {
+      describe: "Name of joke",
+      demandOption: true,
+      type: "string",
+    },
+  },
+  handler(argv) {
+    jokes.readJoke(argv.name);
+  },
+});
+yargs.command({
+  command: "pick",
+  describe: "pick a joke",
+  handler() {
+    jokes.pickOne();
+  },
+});
 yargs.parse();
-
